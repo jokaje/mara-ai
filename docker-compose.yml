@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  mara-api:
+    build: .
+    volumes:
+      - .:/app
+      - chroma-data:/app/chroma-data
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    networks:
+      - coldbot_net
+    depends_on:
+      - ollama
+      - chromadb
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - coldbot_net
+
+  chromadb:
+    image: chromadb/chroma
+    volumes:
+      - chroma-data:/chroma/chroma-data
+    ports:
+      - "8001:8000"
+    networks:
+      - coldbot_net
+
+networks:
+  coldbot_net:
+    external:
+      name: coldbot_coldbot_net
+
+volumes:
+  ollama_data:
+  chroma-data:

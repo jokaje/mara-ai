@@ -1,0 +1,8 @@
+ollama
+fastapi
+uvicorn
+pydantic
+chromadb
+numpy
+websockets
+python-socketio
