@@ -14,15 +14,50 @@ services:
     depends_on:
       - ollama
       - chromadb
+      - ollama-puller # Warte auf Modelle
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  mara-dreamer:
+    build: .
+    container_name: mara-dreamer
+    volumes:
+      - .:/app
+    networks:
+      - coldbot_net
+    depends_on:
+      - ollama
+      - chromadb
+      - ollama-puller # Warte auf Modelle
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python dream_service.py
 
   ollama:
     image: ollama/ollama
+    container_name: mara-ollama
     ports:
       - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
     networks:
       - coldbot_net
+
+  # NEU: Ein temporärer Container, der Modelle lädt
+  ollama-puller:
+    image: curlimages/curl
+    networks:
+      - coldbot_net
+    depends_on:
+      - ollama
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Warte auf Ollama...' &&
+      until curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done &&
+      echo 'Ollama ist bereit! Lade Modelle...' &&
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' &&
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"gemma3:4b\"}' &&
+      echo 'Modelle geladen!'
+      "
 
   chromadb:
     image: chromadb/chroma

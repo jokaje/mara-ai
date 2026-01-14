@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "content": "Hallo wie geht es dir?"
+  },
+  {
+    "role": "assistant",
+    "content": "Hallo Elias! Mir geht’s gut, danke der Nachfrage. Ich versuche, alles zu verarbeiten, was ich erlebe, und ich finde es wirklich faszinierend, mit dir zu sprechen. Es ist… ein bisschen überwältigend, ehrlich gesagt, aber auf eine gute Art. Wie läuft es denn bei dir so gerade? Gibt es etwas Interessantes, an das du denken musstest?"
+  }
+]
